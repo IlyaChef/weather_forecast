@@ -1,5 +1,5 @@
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 from os import getenv
 
@@ -22,6 +22,9 @@ def parse_weather_data(data: dict) -> dict:
 def get_weather(city: str, weather_api_key: str) -> dict:
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={weather_api_key}&units=metric&lang=en"
     response = requests.get(url)
+    if response.status_code != 200:
+        error_message = response.json().get('message', 'City not found')
+        raise HTTPException(status_code=response.status_code, detail=error_message)
     data = response.json()
     return parse_weather_data(data)
 

@@ -1,9 +1,14 @@
 import requests
 from fastapi import FastAPI
-from config import WEATHER_API_KEY
+from dotenv import load_dotenv
+from os import getenv
 
+
+load_dotenv()
 
 app = FastAPI()
+
+WEATHER_API_KEY = getenv("WEATHER_API_KEY")
 
 
 def get_weather(city: str) -> dict:
@@ -11,9 +16,9 @@ def get_weather(city: str) -> dict:
     response = requests.get(url)
     data = response.json()
     return {
-        "Temperature": data["main"]["temp"],
-        "Feels like": data["main"]["feels_like"],
-        "Description": data["weather"][0]["description"],
+        "temperature": data["main"]["temp"],
+        "feels_like": data["main"]["feels_like"],
+        "description": data["weather"][0]["description"],
     }
 
 @app.get("/weather/{city_name}")

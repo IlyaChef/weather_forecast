@@ -20,15 +20,17 @@ def get_weather_url(city: str, weather_api_key: str) -> tuple[str, dict[str, str
     return "https://api.openweathermap.org/data/2.5/weather", params
 
 
-def get_weather_data(url: str, params: dict = None) -> dict:
+def get_weather_data(url: str, params: dict[str, str]) -> dict:
     response = requests.get(url, params=params)
-    if response.status_code != 200:
-        error_message = response.json().get('message', 'City not found')
-        raise HTTPException(status_code=response.status_code, detail=error_message)
+    response.raise_for_status()
     return response.json()
 
 
 def get_weather(city: str, weather_api_key: str) -> dict:
     url, params = get_weather_url(city, weather_api_key)
-    data = get_weather_data(url, params=params)
+    try:
+        data = get_weather_data(url, params=params)
+    except requests.exceptions.HTTPError as error:
+        error_message = error.response.json().get('message', 'City not found')
+        raise HTTPException(status_code=error.response.status_code, detail=error_message)
     return parse_weather_data(data)

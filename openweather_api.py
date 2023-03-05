@@ -1,5 +1,4 @@
 import requests
-from fastapi import HTTPException
 from dotenv import load_dotenv
 from os import getenv
 from weather_parser import parse_weather_data
@@ -7,15 +6,13 @@ from weather_parser import parse_weather_data
 
 load_dotenv()
 
-weather_api_key = getenv("WEATHER_API_KEY")
 
-
-def get_weather_url(city: str, weather_api_key: str) -> tuple[str, dict[str, str]]:
+def get_weather_url(city: str, WEATHER_API_KEY: str) -> tuple[str, dict[str, str]]:
     params = {
         "q": city,
-        "appid": weather_api_key,
+        "appid": WEATHER_API_KEY,
         "units": "metric",
-        "lang": "en"
+        "lang": "en",
     }
     return "https://api.openweathermap.org/data/2.5/weather", params
 
@@ -26,11 +23,12 @@ def get_weather_data(url: str, params: dict[str, str]) -> dict:
     return response.json()
 
 
-def get_weather(city: str, weather_api_key: str) -> dict:
-    url, params = get_weather_url(city, weather_api_key)
+def get_weather(city: str) -> dict:
+    WEATHER_API_KEY = getenv("WEATHER_API_KEY")
+    url, params = get_weather_url(city, WEATHER_API_KEY)
     try:
         data = get_weather_data(url, params=params)
     except requests.exceptions.HTTPError as error:
         error_message = error.response.json().get('message', 'City not found')
-        raise HTTPException(status_code=error.response.status_code, detail=error_message)
+        return {'message': error_message}
     return parse_weather_data(data)

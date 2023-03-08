@@ -1,10 +1,6 @@
 import requests
-from dotenv import load_dotenv
 from os import getenv
 from weather_parser import parse_weather_data
-
-
-load_dotenv()
 
 
 def get_weather_url(city: str, WEATHER_API_KEY: str) -> tuple[str, dict[str, str]]:

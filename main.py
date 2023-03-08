@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from openweather_api import get_weather
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 app = FastAPI()
 

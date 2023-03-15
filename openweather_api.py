@@ -3,10 +3,10 @@ from os import getenv
 from weather_parser import parse_weather_data
 
 
-def get_weather_url(city: str, WEATHER_API_KEY: str) -> tuple[str, dict[str, str]]:
+def get_weather_url(city: str, weather_api_key: str) -> tuple[str, dict[str, str]]:
     params = {
         "q": city,
-        "appid": WEATHER_API_KEY,
+        "appid": weather_api_key,
         "units": "metric",
         "lang": "en",
     }
@@ -20,8 +20,8 @@ def get_weather_data(url: str, params: dict[str, str]) -> dict:
 
 
 def get_weather(city: str) -> dict:
-    WEATHER_API_KEY = getenv("WEATHER_API_KEY")
-    url, params = get_weather_url(city, WEATHER_API_KEY)
+    weather_api_key = getenv("WEATHER_API_KEY")
+    url, params = get_weather_url(city, weather_api_key)
     try:
         data = get_weather_data(url, params=params)
     except requests.exceptions.HTTPError as error:

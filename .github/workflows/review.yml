@@ -19,3 +19,5 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run mypy
         run: python -m mypy --ignore-missing-imports .
+      - name: Run tests
+        run: python -m pytest

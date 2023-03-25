@@ -1,0 +1,21 @@
+name: first review
+
+on:
+  push:
+    branches: [ review ]
+  pull_request:
+    branches: [ review ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.10.8
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run mypy
+        run: python -m mypy --ignore-missing-imports .
